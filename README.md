@@ -4,16 +4,16 @@ A Tool for create template
 
 ### Usage
 
-```
-java -jar CreateTemplateKt-0.0.0.jar
+```sh
+java -jar CreateTemplateKt-0.0.1.jar [configFolderPath]
 ```
 
-### Prerequirement file
+### Prerequirement
 
-Following file under execute directory
+Need following file under config folder
 
 ```
-.create-templateKt/
+<configFolderPath>/
     src.json
     dist.json
 ```
@@ -32,11 +32,9 @@ The format of `src.json` and `dist.json` is refer to [CascadeJson.kt](https://gi
 }
 ```
 
-This will convert to a map
+This will convert to a map, value of those map is a unique key
 
-The value of those map is a unique key used for concat src and dist file
-
-if src is a directory, it will recursively copy file under directory to dist
+src file or content in directory will copy to dist by key
 
 ### Project environment
 
