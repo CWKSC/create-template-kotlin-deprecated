@@ -109,14 +109,21 @@ fun main(args: Array<String>) {
     }
 
     // Copying from src to dist //
-    fileMapping.forEach { (src, dist) ->
-        val srcFile = File(src)
-        val distFile = File(dist)
+    fileMapping.forEach { (_src, _dist) ->
+        val srcFile = File(_src)
+        val distFile = File(_dist)
         val srcIsDirectory = srcFile.isDirectory
+        val distIsDirectory = _dist.endsWith('/')
+        val src = if (srcIsDirectory) _src.trimEnd('/') + "/" else _src
+        val dist = if (distIsDirectory) _dist.trimEnd('/') + "/" else _dist
         if (srcIsDirectory) {
             srcFile.copyRecursively(distFile)
         } else {
-            srcFile.copyTo(distFile)
+            if (distIsDirectory) {
+                srcFile.copyTo(File(distFile, srcFile.name))
+            } else {
+                srcFile.copyTo(distFile)
+            }
         }
         println("${src.padEnd(maxLength)} -> $dist")
     }
