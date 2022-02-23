@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "cwksc"
-version = "0.0.0"
+version = "0.0.1"
 
 repositories {
     mavenCentral()
@@ -16,7 +16,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    implementation("cwksc:CascadeJsonKt-jvm:0.0.0")
+    implementation("cwksc:CascadeJsonKt-jvm:0.0.1")
 }
 
 tasks.test {
@@ -31,6 +31,7 @@ application {
     mainClass.set("MainKt")
 }
 
+// For build far jar //
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "MainKt"

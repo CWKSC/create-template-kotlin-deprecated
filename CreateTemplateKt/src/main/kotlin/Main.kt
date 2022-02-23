@@ -1,25 +1,41 @@
 import java.io.File
 
-const val configFolderPath = ".create-template/"
-const val srcJsonFilePath = configFolderPath + "src.json"
-const val distJsonFilePath = configFolderPath + "dist.json"
+var configFolderPath = ".create-template/"
+var srcJsonFilePath = configFolderPath + "src.json"
+var distJsonFilePath = configFolderPath + "dist.json"
 
-val configFolder = File(configFolderPath)
-val srcJsonFile = File(srcJsonFilePath)
-val distJsonFile = File(distJsonFilePath)
+var configFolder = File(configFolderPath)
+var srcJsonFile = File(srcJsonFilePath)
+var distJsonFile = File(distJsonFilePath)
 
 lateinit var srcMap: MutableMap<String, String>
 lateinit var distMap: MutableMap<String, String>
 
-fun main() {
+fun main(args: Array<String>) {
 
     println()
+
+    if (args.size >= 2) {
+        println("Usage: java -jar CreateTemplateKt-<version>.jar <template config folder>")
+        println()
+        return
+    }
+
+    if (args.size == 1) {
+        configFolderPath = args[0].trimEnd('/') + "/"
+        srcJsonFilePath = configFolderPath + "src.json"
+        distJsonFilePath = configFolderPath + "dist.json"
+
+        configFolder = File(configFolderPath)
+        srcJsonFile = File(srcJsonFilePath)
+        distJsonFile = File(distJsonFilePath)
+    }
 
     // Check config folder exists //
     // If not, create it and exit program
     if (!configFolder.exists()) {
-        println("Directory .create-template/ not exists")
-        println("Create .create-template/ template")
+        println("Directory $configFolderPath not exists")
+        println("Create $configFolderPath template")
         println()
         configFolder.mkdir()
         srcJsonFile.createNewFile()
@@ -42,7 +58,7 @@ fun main() {
     // Read src.json file and convert to map  //
     try {
         srcMap = CascadeJsonUtil.fromStringToMap(srcJsonFile.readText())
-        if(srcMap.isEmpty()) {
+        if (srcMap.isEmpty()) {
             println("[Error] Src Json $srcJsonFilePath is empty json object")
             println()
             return
@@ -56,7 +72,7 @@ fun main() {
     // Read dist.json file and convert to map //
     try {
         distMap = CascadeJsonUtil.fromStringToMap(distJsonFile.readText())
-        if(distMap.isEmpty()) {
+        if (distMap.isEmpty()) {
             println("[Error] Dist Json $distJsonFilePath is empty json object")
             println()
             return
@@ -98,9 +114,9 @@ fun main() {
         val distFile = File(dist)
         val srcIsDirectory = srcFile.isDirectory
         if (srcIsDirectory) {
-            srcFile.copyRecursively(distFile, overwrite = true)
+            srcFile.copyRecursively(distFile)
         } else {
-            srcFile.copyTo(distFile, overwrite = true)
+            srcFile.copyTo(distFile)
         }
         println("${src.padEnd(maxLength)} -> $dist")
     }
