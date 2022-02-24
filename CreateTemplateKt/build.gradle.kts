@@ -1,43 +1,54 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.6.10"
-    application
+    kotlin("multiplatform") version "1.6.10"
+    id("maven-publish")
 }
 
 group = "cwksc"
-version = "0.0.1"
+version = "0.0.0"
 
 repositories {
     mavenCentral()
-    mavenLocal()
 }
 
-dependencies {
-    testImplementation(kotlin("test"))
-
-    implementation("cwksc:CascadeJsonKt-jvm:0.0.1")
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-}
-
-application {
-    mainClass.set("MainKt")
-}
-
-// For build far jar //
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "MainKt"
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
+        withJava()
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
     }
-    configurations["compileClasspath"].forEach { file: File ->
-        from(zipTree(file.absoluteFile))
+    js(BOTH) {
+        browser {
+            commonWebpackConfig {
+                cssSupport.enabled = true
+            }
+        }
     }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    val hostOs = System.getProperty("os.name")
+    val isMingwX64 = hostOs.startsWith("Windows")
+    val nativeTarget = when {
+        hostOs == "Mac OS X" -> macosX64("native")
+        hostOs == "Linux" -> linuxX64("native")
+        isMingwX64 -> mingwX64("native")
+        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+    }
+
+
+    sourceSets {
+        val commonMain by getting
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+        val jvmMain by getting
+        val jvmTest by getting
+        val jsMain by getting
+        val jsTest by getting
+        val nativeMain by getting
+        val nativeTest by getting
+    }
 }

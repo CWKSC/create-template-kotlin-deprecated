@@ -1,40 +1,20 @@
 # CreateTemplate.kt
 
-A Tool for create template
+### Interface
 
-### Usage
+```kotlin
+fun concatSrcDist(
+    srcMap: Map<String, String>,
+    distMap: Map<String, String>,
+    ignoreNotFoundKey: Boolean = false
+): Map<String, String>
 
-```sh
-java -jar CreateTemplateKt-0.0.1.jar [configFolderPath]
+fun CreateTemplateUtil.copyByFileMapping(
+    fileMapping: Map<String, String>,
+    overwrite: Boolean = false,
+    onProgress: (String, String) -> Unit = { _, _ -> }
+)
 ```
-
-### Prerequirement
-
-Need following file under config folder
-
-```
-<configFolderPath>/
-    src.json
-    dist.json
-```
-
-The format of `src.json` and `dist.json` is refer to [CascadeJson.kt](https://github.com/CWKSC/CascadeJson.kt)
-
-```json
-{
-    "src": "key"
-}
-```
-
-```json
-{
-    "dist": "key"
-}
-```
-
-This will convert to a map, value of those map is a unique key
-
-src file or content in directory will copy to dist by key
 
 ### Project environment
 
